@@ -1,8 +1,8 @@
 from fastparquet import ParquetFile
 import json
 
-def htmlFrame():
-    return """
+def makeHtmlFrame(table_elements):
+    return f"""
     <!doctype html>
     <html>
     <head>
@@ -11,6 +11,7 @@ def htmlFrame():
     <!--<link href="css/style.css" rel="stylesheet" type="text/css">-->
     </head>
     <body>
+    {"".join(table_elements)}
     </body>
     </html>
     """
@@ -60,3 +61,8 @@ parent_fields = json.loads(parent_schema)
 result_array = []
 result = createTableHtml(parent_fields, "root", result_array)
 result_array.reverse()
+
+html_str = makeHtmlFrame(result_array)
+
+with open("index.html", "w") as f:
+    f.write(html_str)

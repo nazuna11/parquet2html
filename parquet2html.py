@@ -59,4 +59,4 @@ parent_schema = table.key_value_metadata["org.apache.spark.sql.parquet.row.metad
 parent_fields = json.loads(parent_schema)
 result_array = []
 result = createTableHtml(parent_fields, "root", result_array)
-print(result_array)
+result_array.reverse()

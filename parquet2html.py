@@ -16,7 +16,13 @@ def makeHtmlFrame(table_elements):
     </html>
     """
 
-def createListHtml(cname, ctype):
+def createListHtml(cname, ctype, struct_flag):
+    if struct_flag:
+        return f"""<tr>
+          <td>{cname}</td>
+          <td><p><a href="#{cname}">{str(ctype)}</a></p></td>
+        </tr>"""
+
     return f"""<tr>
       <td>{cname}</td>
       <td>{str(ctype)}</td>
@@ -25,8 +31,10 @@ def createListHtml(cname, ctype):
 def createTableHtml(fields, title, result_array=[]):
     columns = []
     for field in fields["fields"]:
+        struct_flag = False
         if isinstance(field["type"], dict) and field["type"]["type"]=="struct":
             createTableHtml(field["type"], field["name"], result_array)
+            struct_flag = True
             column_type = "struct"
         elif isinstance(field["type"], dict) and field["type"]["type"]=="array":
             array_type = field["type"]["elementType"]
@@ -34,15 +42,15 @@ def createTableHtml(fields, title, result_array=[]):
             if isinstance(array_type, dict) and array_type["type"] == "struct":
                 array_type = "struct"
                 createTableHtml(field["type"]["elementType"], field["name"], result_array)
-            column_type = f"array<{array_type}>"
+                struct_flag = True
+            column_type = f"""array&lt;{array_type}&gt;"""
         else:
             column_type = field["type"]
-        column_html = createListHtml(field["name"], column_type)
+        column_html = createListHtml(field["name"], column_type, struct_flag)
         columns.append(column_html)
 
     result_array.append(f"""
-        <div id="info">
-        <h3>{title}</h3>
+        <h3 id="{title}">{title}</h3>
         <table border="1">
             <tr>
               <th>neme</th>
@@ -50,7 +58,6 @@ def createTableHtml(fields, title, result_array=[]):
             </tr>
             {"".join(columns)}
         </table>
-        </div>
         """)
 
 table = pf = ParquetFile('data/parquet/part-00000-4b0ffe1c-29e3-42c1-881a-686d08da8e37-c000.snappy.parquet')

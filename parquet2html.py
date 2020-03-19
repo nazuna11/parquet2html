@@ -1,3 +1,8 @@
+__author__ = "nazuna <nazuna11develop@gmail.com>"
+__status__ = "production"
+__version__ = "0.0.1"
+__date__    = "20 March 2020"
+
 from fastparquet import ParquetFile
 import json
 

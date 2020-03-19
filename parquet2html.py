@@ -55,8 +55,7 @@ def createTableHtml(fields, title, result_array=[]):
 
 table = pf = ParquetFile('data/parquet/part-00000-4b0ffe1c-29e3-42c1-881a-686d08da8e37-c000.snappy.parquet')
 parent_schema = table.key_value_metadata["org.apache.spark.sql.parquet.row.metadata"]
-#pname_list = parent_schema.names
-#ptype_list = parent_schema.types
+
 parent_fields = json.loads(parent_schema)
 result_array = []
 result = createTableHtml(parent_fields, "root", result_array)

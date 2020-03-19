@@ -5,6 +5,12 @@ __date__    = "20 March 2020"
 
 from fastparquet import ParquetFile
 import json
+import argparse
+parser = argparse.ArgumentParser()
+parser.add_argument("-p", "--path", help="source path", required = True)
+parser.add_argument("-m", "--metadataType", help="type of parquet metadata", default = "org.apache.spark.sql.parquet.row.metadata")
+parser.add_argument("-o", "--output", help="output html path", default = "index.html")
+args = parser.parse_args()
 
 def makeHtmlFrame(table_elements):
     return f"""
@@ -65,8 +71,8 @@ def createTableHtml(fields, title, result_array=[]):
         </table>
         """)
 
-table = pf = ParquetFile('data/parquet/part-00000-4b0ffe1c-29e3-42c1-881a-686d08da8e37-c000.snappy.parquet')
-parent_schema = table.key_value_metadata["org.apache.spark.sql.parquet.row.metadata"]
+table = pf = ParquetFile(args.path)
+parent_schema = table.key_value_metadata[args.metadataType]
 
 parent_fields = json.loads(parent_schema)
 result_array = []
@@ -75,5 +81,5 @@ result_array.reverse()
 
 html_str = makeHtmlFrame(result_array)
 
-with open("index.html", "w") as f:
+with open(args.output, "w") as f:
     f.write(html_str)
